@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-3.1.xsd 
+	http://www.springframework.org/schema/context 
+	http://www.springframework.org/schema/context/spring-context-3.1.xsd  
+	http://www.springframework.org/schema/tx 
+	http://www.springframework.org/schema/tx/spring-tx.xsd" 
+	xmlns:tx="http://www.springframework.org/schema/tx">
+
+	<!-- 配置数据源 -->  
+    <!-- 导入资源文件 -->  
+	<context:property-placeholder location="classpath:jdbc.properties"/> 
+	
+	<bean id="dataSource"  class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName"  value="${jdbc.driverClass}">
+		</property>		
+		<property name="url" value="${jdbc.jdbcUrl}">
+		</property>
+		<property name="username" value="${jdbc.user}"></property>
+		<property name="password" value="${jdbc.password}"></property>
+	</bean>  
+
+<!--  整合 hibernate4 创建 SessionFactory 工厂 -->
+<!-- 配置Hibernate的SessionFactory，通过spring提供的 LocalSessionFactoryBean配置--> 
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+	 <!-- 配置依赖的数据源属性 --> 
+		<property name="dataSource" ref="dataSource"></property>
+		
+		<!-- hibernate 配置文件的路径 -->  
+		<property name="configLocation"
+			value="classpath:hibernate.cfg.xml">
+		</property>
+		
+		<!-- 设置 Spring 在哪里找 实体类 --> 
+	    <property name="packagesToScan">  
+	        <list>  
+	             <value>com.canteen.pojo</value>  
+	        </list>  
+	    </property>  
+	    
+	    <!-- 配置 hibernate -->
+	  	<property name="hibernateProperties">
+	         <props>
+ 	            <prop key="hibernate.current_session_context_class">org.springframework.orm.hibernate4.SpringSessionContext</prop> 
+	     
+	         </props>
+	    </property>
+	</bean>
+	
+	<!-- 配置 Spring 的事务管理 -->
+	<!-- 创建事务管理器 -->
+	 <!-- 配置 Spring 的声明式事物 --> <!--定义Hibernate的事务管理器HibernateTransactionManager -->
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	
+	<!-- Admin -->
+	<bean id="adminDao" class="com.canteen.dao.AdminDAO" >  
+        <property name="sessionFactory" ref="sessionFactory"> </property>  
+	</bean>  
+	
+	<bean id="adminSeriverImpl" class="com.canteen.service.Impl.AdminServiceImpl">  
+	        <property name="adminDAO" ref="adminDao"></property>  
+	</bean>   
+	   
+	<bean id="adminAction" class="com.canteen.action.AdminAction" >  
+	        <property name="adminService" ref="adminSeriverImpl"></property>  
+	</bean>
+	
+	<!-- Category -->
+	<bean id="categoryDao" class="com.canteen.dao.CategoryDAO" >  
+        <property name="sessionFactory" ref="sessionFactory"> </property>  
+	</bean>  
+	
+	<bean id="categoryServiceImpl" class="com.canteen.service.Impl.CategoryServiceImpl">  
+	        <property name="categoryDAO" ref="categoryDao"></property>  
+	</bean>   
+	   
+	<bean id="categoryAction" class="com.canteen.action.CategoryAction" >  
+	        <property name="categoryService" ref="categoryServiceImpl"></property>  
+	</bean>
+	
+	<!-- Menu -->
+	<bean id="menuDao" class="com.canteen.dao.MenuDAO" >  
+        <property name="sessionFactory" ref="sessionFactory"> </property>  
+	</bean>  
+	
+	<bean id="menuSeriverImpl" class="com.canteen.service.Impl.MenuServiceImpl">  
+	        <property name="menuDAO" ref="menuDao"></property>  
+	</bean>   
+	   
+	<bean id="menuAction" class="com.canteen.action.MenuAction" >  
+	        <property name="menuService" ref="menuSeriverImpl"></property> 
+	        <property name="categoryService" ref="categoryServiceImpl"></property> 
+	</bean>
+	
+	<!-- OrderItem -->
+	<bean id="orderitemDao" class="com.canteen.dao.OrderitemDAO" >  
+        <property name="sessionFactory" ref="sessionFactory"> </property>  
+	</bean>  
+	
+	<bean id="orderitemSeriverImpl" class="com.canteen.service.Impl.OrderitemServiceImpl">  
+	        <property name="orderitemDAO" ref="orderitemDao"></property>  
+	</bean>   
+	   
+	<bean id="orderitemAction" class="com.canteen.action.OrderitemAction" >  
+	        <property name="orderitemService" ref="orderitemSeriverImpl"></property>  
+	</bean>
+		
+	<!-- Tables -->
+	<bean id="tablesDao" class="com.canteen.dao.TablesDAO" >  
+        <property name="sessionFactory" ref="sessionFactory"> </property>  
+	</bean>  
+	
+	<bean id="tablesSeriverImpl" class="com.canteen.service.Impl.TablesServiceImpl">  
+	        <property name="tablesDAO" ref="tablesDao"></property>  
+	</bean>   
+	   
+	<bean id="tablesAction" class="com.canteen.action.TablesAction" >  
+	        <property name="tablesService" ref="tablesSeriverImpl"></property>  
+	</bean>
+	
+	<!-- Orders -->
+	<bean id="ordersDao" class="com.canteen.dao.OrdersDAO" >  
+        <property name="sessionFactory" ref="sessionFactory"> </property>  
+	</bean>  
+	
+	<bean id="ordersSeriverImpl" class="com.canteen.service.Impl.OrdersServiceImpl">  
+	        <property name="ordersDAO" ref="ordersDao"></property>  
+	</bean>   
+	   
+	<bean id="ordersAction" class="com.canteen.action.OrdersAction" >  
+	        <property name="ordersService" ref="ordersSeriverImpl"></property>  
+	        <property name="tablesService" ref="tablesSeriverImpl"></property> 
+	</bean>
+	
+	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
+	
+</beans>

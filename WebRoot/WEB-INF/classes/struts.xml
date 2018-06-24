@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+
+	<package name="myPackage" extends="struts-default">
+		<!-- admin -->
+		<action name="adminManagerAction" class="adminAction">
+			<result name="loginOut">/admin/longin_out_success.html</result>
+			<result name="changeAdmin">/admin/login/login.jsp</result>
+		</action>
+
+
+		<!-- Orders -->
+		<action name="ordersManagerAction" class="ordersAction">
+			<result name="findAllOrders">/admin/jsp/orders/all_ordersList.jsp</result>
+			<result name="queryOrderMsg">/admin/jsp/orders/orderMsg.jsp</result>
+			<result name="queryHaveToMakeOrders">/admin/jsp/making/have_to_make_list.jsp</result>
+			<result name="queryPaidOrders">/admin/jsp/orders/paidOrdersList.jsp</result>
+			<result name="queryUnpaidOrders">/admin/jsp/orders/unpaidOrdersList.jsp</result>
+			<result name="queryMakingOrders">/admin/jsp/orders/makingOrdersList.jsp</result>
+			<result name="querySubmittedOrders">/admin/jsp/orders/submittedOrdersList.jsp</result>
+		</action>
+
+		
+		<!-- Category -->
+		<action name="categoryManagerAction" class="categoryAction">
+			<result name="queryAllCategoryList">/admin/jsp/menu/categoryList.jsp</result>
+		</action>
+		
+		<!-- Menu -->
+		<action name="menuManagerAction" class="menuAction">		
+			<result name="queryAllMenuList">/admin/jsp/menu/menuList.jsp</result>
+			<result name="queryAllCategory">/admin/jsp/menu/menu_edit.jsp</result>			
+		</action>
+
+
+	</package>
+
+
+
+	<package name="ajaxPackage" extends="json-default">
+	
+	<!-- Admin -->
+		<action name="adminAjaxAction" class="adminAction">
+			<!-- 判断有没有重复 -->
+			<result name="login" type="json">
+				<param name="root">
+					result<!-- result是action中设置的变量名，也是页面需要返回的数据，该变量必须有setter和getter方法 -->
+				</param>
+			</result>
+		</action>
+	
+	<!-- Orders -->
+		<action name="ordersAjaxAtion" class="ordersAction">
+			<!-- 更新餐单 -->
+			<result name="updateOrderState_success" type="json">
+				<param name="root">
+					result<!-- result是action中设置的变量名，也是页面需要返回的数据，该变量必须有setter和getter方法 -->
+				</param>
+			</result>
+		</action>
+		
+		<!-- Category -->
+		<action name="categoryAjaxAtion" class="categoryAction">
+			<!-- 更新类别 -->
+			<result name="updateCategoryById" type="json">
+				<param name="root">
+					result<!-- result是action中设置的变量名，也是页面需要返回的数据，该变量必须有setter和getter方法 -->
+				</param>
+			</result>
+			<!-- 添加类别 -->
+			<result name="insertCategory" type="json">
+				<param name="root">
+					result<!-- result是action中设置的变量名，也是页面需要返回的数据，该变量必须有setter和getter方法 -->
+				</param>
+			</result>
+			<!-- 删除类别 -->
+			<result name="delCategory" type="json">
+				<param name="root">
+					result<!-- result是action中设置的变量名，也是页面需要返回的数据，该变量必须有setter和getter方法 -->
+				</param>
+			</result>
+		</action>
+
+	<!-- Menu -->
+	<action name="menuAjaxAction" class="menuAction">
+		<param name="savePath">img-menu</param>	<!-- 保存图片的文件名 -->
+		<!-- 上传图片 -->
+		<result name="uploadMenuImg" type="json">
+			<param name="root">
+				result<!-- result是action中设置的变量名，也是页面需要返回的数据，该变量必须有setter和getter方法 -->
+			</param>
+		</result>
+<!-- 		<result name="input">index.jsp</result> -->
+		<interceptor-ref name="defaultStack">
+			<param name="fileUpload.maximumSize">1024*1024</param>
+			<param name="fileUplaod.allowedTypes">image/bmp,image/pjpeg,image/gif</param>
+		</interceptor-ref>
+	</action>
+		
+	</package>
+
+</struts>    
