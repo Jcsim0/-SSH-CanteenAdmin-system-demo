@@ -84,6 +84,7 @@
 								
 								<td>
 									<span id="menuName"><s:property value="#menus.menuName"/></span>
+									<input type="hiddden" id="menuId" name="menuId" value='<s:property value="#menus.menuId"/>'>
 									<div id="menuNameInputDiv" style="display:none;" ><input id="menuNameInputVal" type="text" ></div>
 								</td>
 								
@@ -208,17 +209,19 @@ function submitMenu(obj){
 	var menuImg = o.find("#menuImgInputVal").val();
 	var menuPrice = o.find("#menuPriceInputVal").val();
 	var menuSummary = o.find("#menuSummaryInputVal").val();
-	
-	//category_change(inputValue,id);   
-	 
-	o.find("#categoryName").text(categoryName);  //更新新类名
-    o.find("#menuName").text(menuName);  //更新新菜名
+	  
+	o.find("#categoryName").text(categoryName);  
+    o.find("#menuName").text(menuName);
+    var imgtext = menuImg.slice(12);  
     
     if(menuImg!=''){
-    o.find("#menuImg").html("<img alt=\'菜品图\' width=\'200px\'src=\'<%=path %>/img-menu/"+menuImg+"\'>");
+    o.find("#menuImg").html("<img alt=\'菜品图\' width=\'200px\'src=\'<%=path %>/img-menu/"+imgtext+"\'>");
     }		//更新 新图片
-    console.debug("newImg="+menuImg);//图片名还没解决
+    console.debug("newImg="+imgtext);//图片名已解决
+    var menuId = o.find("#menuId").val();
+    menu_change(categoryName,menuName,imgtext,menuPrice,menuSummary,menuId); 
     		
+    
     o.find("#menuPrice").text(menuPrice);		//更新 新价格
     o.find("#menuSummary").text(menuSummary);	//更新 新简介
 
@@ -240,17 +243,23 @@ function submitMenu(obj){
     
 }
 
-function category_change(name,id){
+function menu_change(categoryName,menuName,imgtext,menuPrice,menuSummary,menuId){
 	layer.confirm('确认更改吗？', {
 		btn: ['确认','取消'], 
+		
 		shade: false,
 		closeBtn: 0
 	},
 	function(){
+			uploadImg();
 			$.ajax({
 			type: 'POST',
-			url: 'categoryAjaxAtion!updateCategoryById',
-			data:{'name':name,'id':id },
+			url: 'menuAjaxAtion!updateMenu',
+			data:{
+				'categoryName':categoryName,
+				'menuName':menuName,
+				'imgtext':imgtext,
+				},
 			dataType: 'json',
 			success: function(data){
 			console.debug("data="+data);
@@ -264,6 +273,36 @@ function category_change(name,id){
 		
 	});	
 }
+
+function uploadImg() {
+	var img_file = document.getElementById("imgName");
+	var fileObj = img_file.files[0];
+	var formData = new FormData();
+	formData.append("menuImgFile",fileObj);
+		$.ajax({
+			type : 'POST',
+			url : 'menuAjaxAction!uploadMenuImg',
+			data : formData,
+			processData : false,
+			contentType : false,
+			async:false,
+			dataType : 'json',
+			success : function(data) {
+				console.debug("data=" + data);
+				layer.msg('上传成功!', {
+					icon : 6,
+					time : 2000
+				});
+			},
+			error : function(data) {
+				console.log(data);
+				layer.msg('上传失败!', {
+					icon : 5,
+					time : 2000
+				});
+			},
+		});
+	}
 
 function checkLength(which,max) {
 	var maxChars = max;

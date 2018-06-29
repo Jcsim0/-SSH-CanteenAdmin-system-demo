@@ -240,8 +240,8 @@ public class AdminDAO extends BaseHibernateDAO
 				} else
 					return "passwordError";// ÃÜÂë´íÎó
 			}
-			return "accountError";// µÇÂ¼Ãû´íÎó
-		} else
 			return "unknowError";// Òì³£
+		} else
+			return "accountError";// µÇÂ¼Ãû´íÎó
 	}
 }

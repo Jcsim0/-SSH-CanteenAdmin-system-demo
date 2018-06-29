@@ -59,17 +59,18 @@
 				success: function(data){
 				console.debug("data="+data);
 					parent.layer.msg('添加成功!', {icon:6,time:1000});
-					parent.location.replace(parent.location.href);
+					parent.setTimeout('location.replace(location.href)',1500);
+					//parent.location.replace(parent.location.href);
 					var index = parent.layer.getFrameIndex(window.name);
-					parent.$('.btn-refresh').click();
+					//parent.$('.btn-refresh').click();
 					parent.layer.close(index); 
 				},
 				error:function(data) {
 					console.debug(data);
 					parent.layer.msg('添加失败，稍后再试试吧!',{icon: 5,time:1000});
-					var index = parent.layer.getFrameIndex(window.name);
-					parent.$('.btn-refresh').click();
-					parent.layer.close(index); 
+					//var index = parent.layer.getFrameIndex(window.name);
+					//parent.$('.btn-refresh').click();
+					//parent.layer.close(index); 
 				},
 			});
 		
@@ -88,13 +89,13 @@
 			$("#modal-alert").fadeIn();
 			setTimeout($.Huimodalalert.hide, speed);
 		}
-	}
+	};
 	$.Huimodalalert.hide = function() {
 		$("#modal-alert").fadeOut("normal",
 		function() {
 			$("#modal-alert").remove();
 		});
-	}
+	};
 } (window.jQuery);
 </script>
 </html>
